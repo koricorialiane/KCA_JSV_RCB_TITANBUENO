@@ -1,4 +1,10 @@
 from pathlib import Path
+import sys
+
+if __name__ == "__main__" and __package__ is None:
+    script_path = Path(__file__).resolve()
+    sys.path.insert(0, str(script_path.parent.parent))
+    __package__ = script_path.parent.name
 
 from .config import DistrictScenario, FestivalScenario, NetworkConfig
 from .instrumentation import assumptions_table, validation_checklist
@@ -21,7 +27,6 @@ from .report import (
 )
 from .scenario_a import analyze_financial_district
 from .scenario_b import analyze_festival
-from .site_builder import write_static_site
 
 
 def main() -> None:
@@ -91,18 +96,6 @@ def main() -> None:
     write_docx_document(outputs / "informe_resultados.docx", "Operacion Nexo 5G/6G - Informe tecnico", report_markdown, outputs)
     write_docx_document(outputs / "anexo_calculos.docx", "Operacion Nexo 5G/6G - Anexo de calculos", annex_markdown, outputs)
     write_docx_document(outputs / "guion_defensa.docx", "Operacion Nexo 5G/6G - Guion de defensa", defense_markdown, outputs)
-
-    write_static_site(
-        project_root=project_root,
-        outputs_root=outputs,
-        config=config,
-        system_table=system_table,
-        goal_table=goal_table,
-        assumptions=assumptions,
-        validation=validation,
-        district_results=district_results,
-        festival_results=festival_results,
-    )
 
     print("\n=== Scenario A - coverage ===")
     print(district_results["coverage"].to_string(index=False))
